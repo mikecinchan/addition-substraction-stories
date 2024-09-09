@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Math Lessons</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        h1 {
+            color: #4a4a4a;
+        }
+        #question {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        #answer {
+            font-size: 18px;
+            padding: 5px;
+            width: 100px;
+        }
+        #next {
+            font-size: 18px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #next:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #progress {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        #result-image {
+            max-width: 200px;
+            margin: 20px auto;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fun Math Lessons</h1>
+        <div id="question"></div>
+        <input type="number" id="answer" placeholder="Your answer">
+        <button id="next" disabled>Next</button>
+        <img id="result-image" alt="Result">
+        <div id="progress"></div>
+    </div>
+
+    <script>
+        const questions = [
+        { q: "John has 245 marbles. His friend gave him 132 more. How many marbles does John have now?", a: 377 },
+{ q: "Sarah had 354 stickers. She gave 123 stickers to her friends. How many stickers does Sarah have left?", a: 231 },
+{ q: "A bakery baked 423 cupcakes in the morning and 278 more in the afternoon. How many cupcakes did they bake in total?", a: 701 },
+{ q: "The library had 678 books. They added 121 more books to the collection. How many books are there now?", a: 799 },
+{ q: "Peter collected 542 stamps, and his sister collected 243 stamps. How many stamps did they collect together?", a: 785 },
+{ q: "Maria had 812 coins. She lost 155 of them. How many coins does she have left?", a: 657 },
+{ q: "A farmer planted 374 apple trees and 256 pear trees. How many trees did the farmer plant in total?", a: 630 },
+{ q: "Emily read 437 pages of her book. She still needs to read 239 more pages. How many pages is the book in total?", a: 676 },
+{ q: "Tom's dad drove 456 miles to the beach and 311 miles back home. How many miles did he drive altogether?", a: 767 },
+{ q: "There were 512 students in a school. 124 students transferred to another school. How many students are left in the school?", a: 388 },
+{ q: "Lisa saved 384 dollars. Her friend saved 212 dollars. How much money did they save together?", a: 596 },
+{ q: "A store sold 487 ice creams on Monday and 309 on Tuesday. How many ice creams did the store sell in total?", a: 796 },
+{ q: "Jack bought 624 candies. He ate 187 of them. How many candies does he have left?", a: 437 },
+{ q: "A zoo has 358 lions and 271 tigers. How many big cats are there in total?", a: 629 },
+{ q: "The concert hall has 489 seats. 164 seats were filled. How many seats were still available?", a: 325 },
+{ q: "A train traveled 578 miles north and 312 miles south. How many miles did the train travel in total?", a: 890 },
+{ q: "Sophie has 263 red balloons and 154 blue balloons. How many balloons does she have in total?", a: 417 },
+{ q: "A box contains 436 red balls and 211 green balls. How many balls are there in total?", a: 647 },
+{ q: "Lucy has 589 beads. She used 163 beads for a project. How many beads does she have left?", a: 426 },
+{ q: "A park has 412 trees. 143 trees were cut down. How many trees are left in the park?", a: 269 },
+{ q: "There are 738 students in a school. 201 of them went on a field trip. How many students stayed at school?", a: 537 },
+{ q: "James found 421 shells on the beach. He gave 189 shells to his friend. How many shells does James have now?", a: 232 },
+{ q: "A farmer has 312 cows and 278 goats. How many animals does the farmer have in total?", a: 590 },
+{ q: "A library had 578 books. They sold 145 of them. How many books are left in the library?", a: 433 },
+{ q: "A truck delivered 413 boxes in the morning and 296 in the afternoon. How many boxes were delivered in total?", a: 709 },
+{ q: "A basket contains 542 apples. 213 apples were used for making pies. How many apples are left in the basket?", a: 329 },
+{ q: "A gardener planted 365 flowers and 284 shrubs. How many plants did the gardener plant in total?", a: 649 },
+{ q: "A classroom had 431 chairs. 176 chairs were broken. How many chairs are still usable?", a: 255 },
+{ q: "There were 539 toys in a store. 182 toys were sold. How many toys are left in the store?", a: 357 },
+{ q: "A movie theater sold 427 tickets for the morning show and 362 tickets for the evening show. How many tickets were sold in total?", a: 789 },
+{ q: "A bakery had 512 cakes. 183 cakes were sold. How many cakes are left in the bakery?", a: 329 },
+{ q: "A soccer team scored 371 goals in one season and 289 goals in the next season. How many goals did they score in total?", a: 660 },
+{ q: "A factory produced 486 toys in the morning and 392 in the afternoon. How many toys did the factory produce in total?", a: 878 },
+{ q: "Anna collected 473 seashells. She gave 128 of them to her friend. How many seashells does Anna have left?", a: 345 },
+{ q: "There are 671 students in a school. 193 students were absent. How many students were present?", a: 478 },
+{ q: "A store had 514 pens. They sold 218 of them. How many pens are left in the store?", a: 296 },
+{ q: "A plane flew 479 miles to the north and 321 miles to the south. How many miles did the plane fly in total?", a: 800 },
+{ q: "A farmer harvested 359 oranges and 273 lemons. How many fruits did the farmer harvest in total?", a: 632 },
+{ q: "A library has 487 fiction books and 362 non-fiction books. How many books are there in total?", a: 849 },
+{ q: "A bus traveled 546 miles to the city and 297 miles back. How many miles did the bus travel in total?", a: 843 },
+{ q: "A shop had 631 toys. They sold 186 toys. How many toys are left in the shop?", a: 445 },
+{ q: "A train carried 429 passengers in the morning and 337 passengers in the evening. How many passengers did the train carry in total?", a: 766 },
+{ q: "A factory produced 574 cars in January and 396 cars in February. How many cars did the factory produce in total?", a: 970 },
+{ q: "A zoo had 415 animals. They received 288 more animals. How many animals are there in the zoo now?", a: 703 },
+{ q: "A book has 563 pages. Sarah has read 189 pages. How many pages does Sarah still need to read?", a: 374 },
+{ q: "A store had 342 chocolate bars. They sold 163 of them. How many chocolate bars are left?", a: 179 },
+{ q: "A farmer planted 378 corn plants and 265 wheat plants. How many plants did the farmer plant in total?", a: 643 },
+{ q: "A school had 418 students. 127 students graduated. How many students are left in the school?", a: 291 },
+{ q: "A warehouse stored 459 boxes. 134 boxes were shipped out. How many boxes are left in the warehouse?", a: 325 },
+{ q: "A store sold 368 shirts in the morning and 217 shirts in the afternoon. How many shirts did the store sell in total?", a: 585 },
+{ q: "A gardener planted 482 roses and 319 tulips. How many flowers did the gardener plant in total?", a: 801 },
+{ q: "A bakery had 596 loaves of bread. They sold 248 loaves. How many loaves of bread are left?", a: 348 },
+{ q: "A park has 463 benches. 136 benches were broken. How many benches are still usable?", a: 327 },
+{ q: "A train traveled 471 miles to the west and 312 miles to the east. How many miles did the train travel in total?", a: 783 },
+{ q: "A store had 514 candies. They sold 176 candies. How many candies are left in the store?", a: 338 },
+{ q: "A library received 385 new books. They already had 239 books. How many books does the library have now?", a: 624 },
+{ q: "A truck delivered 429 crates of apples and 367 crates of oranges. How many crates did the truck deliver in total?", a: 796 },
+{ q: "A factory produced 492 bicycles in March and 371 bicycles in April. How many bicycles did the factory produce in total?", a: 863 },
+{ q: "A farmer had 426 chickens. He sold 193 chickens. How many chickens does the farmer have left?", a: 233 },
+{ q: "A zoo has 376 birds. They received 254 more birds. How many birds are there in the zoo now?", a: 630 },
+{ q: "A plane flew 543 miles to the east and 198 miles to the west. How many miles did the plane fly in total?", a: 741 },
+{ q: "A store had 618 books. They sold 182 books. How many books are left in the store?", a: 436 },
+{ q: "A library had 549 magazines. 178 magazines were borrowed. How many magazines are left in the library?", a: 371 },
+{ q: "A classroom had 434 chairs. 159 chairs were broken. How many chairs are still usable?", a: 275 },
+{ q: "A factory produced 478 toys in the morning and 311 toys in the evening. How many toys did the factory produce in total?", a: 789 },
+{ q: "A park has 492 trees. 163 trees were cut down. How many trees are left in the park?", a: 329 },
+{ q: "A store sold 375 toys in the morning and 246 toys in the afternoon. How many toys did the store sell in total?", a: 621 },
+{ q: "A gardener planted 429 flowers. 153 flowers wilted. How many flowers are still healthy?", a: 276 },
+{ q: "A school had 582 students. 207 students transferred to another school. How many students are left in the school?", a: 375 },
+{ q: "A bus traveled 439 miles to the city and 327 miles back. How many miles did the bus travel in total?", a: 766 },
+{ q: "A shop had 497 toys. They sold 189 toys. How many toys are left in the shop?", a: 308 },
+{ q: "A library had 523 books. They added 174 more books to the collection. How many books are there now?", a: 697 },
+{ q: "A bakery sold 482 loaves of bread in the morning and 289 loaves in the afternoon. How many loaves did the bakery sell in total?", a: 771 },
+{ q: "A zoo had 619 animals. They received 137 more animals. How many animals are there in the zoo now?", a: 756 },
+{ q: "A farmer harvested 486 apples and 212 pears. How many fruits did the farmer harvest in total?", a: 698 },
+{ q: "A classroom had 418 desks. 143 desks were broken. How many desks are still usable?", a: 275 },
+{ q: "A store sold 374 candies in the morning and 246 candies in the afternoon. How many candies did the store sell in total?", a: 620 },
+{ q: "A truck delivered 483 boxes in the morning and 214 boxes in the afternoon. How many boxes were delivered in total?", a: 697 },
+{ q: "A plane flew 548 miles to the north and 267 miles to the south. How many miles did the plane fly in total?", a: 815 },
+{ q: "A farmer had 426 cows. He sold 179 cows. How many cows does the farmer have left?", a: 247 },
+{ q: "A factory produced 482 cars in May and 356 cars in June. How many cars did the factory produce in total?", a: 838 },
+{ q: "A store had 631 shirts. They sold 184 shirts. How many shirts are left in the store?", a: 447 },
+{ q: "A park has 473 benches. 159 benches were broken. How many benches are still usable?", a: 314 },
+{ q: "A train traveled 431 miles to the west and 319 miles to the east. How many miles did the train travel in total?", a: 750 },
+{ q: "A store had 528 candies. They sold 176 candies. How many candies are left in the store?", a: 352 },
+{ q: "A library received 374 new books. They already had 296 books. How many books does the library have now?", a: 670 },
+{ q: "A truck delivered 479 crates of apples and 367 crates of oranges. How many crates did the truck deliver in total?", a: 846 },
+{ q: "A factory produced 492 bicycles in May and 371 bicycles in June. How many bicycles did the factory produce in total?", a: 863 },
+{ q: "A farmer had 432 chickens. He sold 193 chickens. How many chickens does the farmer have left?", a: 239 },
+{ q: "A zoo has 376 birds. They received 254 more birds. How many birds are there in the zoo now?", a: 630 }
+        ];
+function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Shuffle the questions array before starting
+        shuffleArray(questions);
+
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        const totalQuestions = 10;
+
+        const questionEl = document.getElementById('question');
+        const answerEl = document.getElementById('answer');
+        const nextBtn = document.getElementById('next');
+        const progressEl = document.getElementById('progress');
+        const resultImage = document.getElementById('result-image');
+
+        function loadQuestion() {
+            if (currentQuestion < totalQuestions) {
+                questionEl.textContent = questions[currentQuestion].q;
+                answerEl.value = '';
+                nextBtn.disabled = true;
+                progressEl.textContent = `${correctAnswers}/${totalQuestions}`;
+                resultImage.style.display = 'none';
+            } else {
+                questionEl.textContent = "Great job! You've completed all the questions!";
+                answerEl.style.display = 'none';
+                nextBtn.style.display = 'none';
+                resultImage.style.display = 'none';
+                progressEl.textContent = `${totalQuestions}/${totalQuestions}`; // Update the progress one last time
+                setTimeout(() => {
+                    alert('Thank you for studying with us!');
+                }, 500);
+            }
+        }
+
+        answerEl.addEventListener('input', () => {
+            nextBtn.disabled = answerEl.value.trim() === '';
+        });
+
+        nextBtn.addEventListener('click', () => {
+            const userAnswer = parseInt(answerEl.value);
+            if (userAnswer === questions[currentQuestion].a) {
+                correctAnswers++;
+                resultImage.src = 'Happy.png';
+                resultImage.alt = 'Correct Answer';
+                resultImage.style.display = 'block';
+                setTimeout(() => {
+                    currentQuestion++;
+                    loadQuestion();
+                }, 2500);
+            } else {
+                resultImage.src = 'Sad.png';
+                resultImage.alt = 'Wrong Answer';
+                resultImage.style.display = 'block';
+                setTimeout(() => {
+                    resultImage.style.display = 'none';
+                }, 2500);
+            }
+        });
+
+        loadQuestion();
+    </script>
+</body>
+</html>
